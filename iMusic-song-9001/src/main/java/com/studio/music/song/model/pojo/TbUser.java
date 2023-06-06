@@ -1,6 +1,5 @@
 package com.studio.music.song.model.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,14 +14,12 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class TbUser {
-    @TableId(value = "id", type = IdType.AUTO)
-    private String id;              // 自增ID
+    @TableId
+    private Integer id;              // 自增ID
 
-    private String username;        // 用户名（账号）
+    private String email;           // 用户名（账号）
 
     private String password;        // 密码
-
-    private Integer sex;            // 性别
 
     private String image;           // 头像
 

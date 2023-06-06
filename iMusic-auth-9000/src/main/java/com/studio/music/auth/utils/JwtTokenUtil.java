@@ -51,18 +51,18 @@ public class JwtTokenUtil {
     /**
      * 生成token
      *
-     * @param username 用户名
+     * @param email 邮箱
      * @param role 用户角色
      * @return token
      */
-    public static String createToken(String username, String role) {
+    public static String createToken(String email, String role) {
 
 //        Map<String, Object> map = new HashMap<>();
 //        map.put(ROLE_CLAIMS, role);
 
         String token = Jwts
                 .builder()
-                .setSubject(username)
+                .setSubject(email)
 //                .setClaims(map)
                 // .claim("username", username)
                 .setIssuedAt(new Date())

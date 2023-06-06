@@ -1,9 +1,12 @@
 package com.studio.music.song;
 
+import com.studio.music.song.netty.NettyServer;
+import jakarta.annotation.PostConstruct;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+//import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 /**
  * @Author: BinBin
@@ -12,9 +15,18 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
  */
 @SpringBootApplication
 @MapperScan("com.studio.music.song.mapper")
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+//@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SongApplication {
+
+    @Autowired
+    private NettyServer nettyServer;
     public static void main(String[] args) {
         SpringApplication.run(SongApplication.class, args);
     }
+
+//    @PostConstruct
+//    public void init() {
+//        // 启动Netty服务器
+//        nettyServer.start();
+//    }
 }

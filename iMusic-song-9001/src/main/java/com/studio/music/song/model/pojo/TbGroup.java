@@ -18,7 +18,7 @@ import java.util.Date;
 @Accessors(chain = true)
 public class TbGroup {
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId
     private Integer id;             // 自增ID
 
     private String name;            // 群名

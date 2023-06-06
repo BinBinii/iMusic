@@ -3,6 +3,7 @@ package com.studio.music.song.socket;
 import com.alibaba.fastjson.JSONObject;
 import com.studio.music.song.command.HeartBeatRequestPacket;
 import com.studio.music.song.command.HeartBeatResponsePacket;
+import com.studio.music.song.utils.SessionUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,6 +23,7 @@ public class HeartBeatRequestHandler extends SimpleChannelInboundHandler<HeartBe
 	protected void channelRead0(ChannelHandlerContext ctx, HeartBeatRequestPacket heartBeatRequestPacket) throws Exception {
 		// TODO Auto-generated method stub
 		ByteBuf byteBuf = getBuf(ctx);
+		SessionUtils.expireChannel(ctx.channel());
 		ctx.channel().writeAndFlush(new TextWebSocketFrame(byteBuf));
 	}
 	

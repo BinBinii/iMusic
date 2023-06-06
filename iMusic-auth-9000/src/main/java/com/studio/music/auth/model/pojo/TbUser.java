@@ -16,13 +16,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TbUser {
     @TableId
-    private String id;          // 自增ID
+    private Integer id;              // 自增ID
 
-    private String username;        // 用户名（账号）
+    private String email;           // 用户名（账号）
 
     private String password;        // 密码
-
-    private Integer sex;            // 性别
 
     private String image;           // 头像
 

@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TbUser tbUser = tbUserMapper.selectOne(new QueryWrapper<TbUser>().eq("username", username));
+        TbUser tbUser = tbUserMapper.selectOne(new QueryWrapper<TbUser>().eq("email", username));
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         List<TbUserRole> tbUserRoles = tbUserRoleMapper.selectList(new QueryWrapper<TbUserRole>().eq("user_id", tbUser.getId()));
         tbUserRoles.forEach(tbUserRole -> {
@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             GrantedAuthority grantedAuthority = tbRole::getAuthority;
             grantedAuthorities.add(grantedAuthority);
         });
-        return new User(tbUser.getUsername(), tbUser.getPassword(), grantedAuthorities);
+        return new User(tbUser.getEmail(), tbUser.getPassword(), grantedAuthorities);
     }
 }
 

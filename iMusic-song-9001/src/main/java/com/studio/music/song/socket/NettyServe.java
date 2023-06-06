@@ -1,5 +1,7 @@
 package com.studio.music.song.socket;
 
+import com.studio.music.song.mapper.TbGroupMapper;
+import com.studio.music.song.mapper.TbUserMapper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -17,6 +19,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,6 +35,12 @@ public class NettyServe implements InitializingBean {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private TbGroupMapper tbGroupMapper;
+    @Autowired
+    private TbUserMapper tbUserMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -52,7 +61,7 @@ public class NettyServe implements InitializingBean {
                     protected void initChannel(NioSocketChannel ch) throws Exception {
                         // 为什么空闲检测要插入到最前面？因为如果插入到最后面的话，如果这条连接读到了数据，但是在传播的过程中出错了或者数据处理完后不往
                         // 后面传递，最终IMIdleStateHandler就不会读到数据  、导致误判。
-                        ch.pipeline().addLast(new IMIdleStateHandler());
+//                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast("http-codec", new HttpServerCodec()); //http编解码
                         ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536)); //httpContent消息聚合
                         ch.pipeline().addLast("compressor", new HttpContentCompressor()); // HttpContent 压缩
@@ -61,9 +70,9 @@ public class NettyServe implements InitializingBean {
                         ch.pipeline().addLast(RegisterRequestHandler.INSTANCE);
                         ch.pipeline().addLast(new MessageRequestHandler(rabbitTemplate));
                         ch.pipeline().addLast(CreateGroupRequestHandler.INSTANCE);
-                        ch.pipeline().addLast(GroupMessageRequestHandler.INSTANCE);
+                        ch.pipeline().addLast(new GroupMessageRequestHandler(redisTemplate, tbGroupMapper, tbUserMapper));
                         ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
-                        ch.pipeline().addLast(ExceptionHandler.INSTANCE);
+//                        ch.pipeline().addLast(ExceptionHandler.INSTANCE);
                     }
                 });
         bind(bootstrap, nettyPort);

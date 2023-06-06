@@ -2,44 +2,57 @@ package com.studio.music.song.command;
 
 public class GroupMessageRequestPacket extends Packet{
 
-	private String toGroupId;
+	private Integer toGroupId;
+
+	private Integer userId;
 	
-	private String message;
-	
-	private String fileType;
+	private Integer operate;		// 0: 加入歌曲 1: 跳过歌曲 2: 移除歌曲
+
+	private Integer musicId;
+
 	
 	public GroupMessageRequestPacket() {
 		
 	}
 	
-	public GroupMessageRequestPacket(String toGroupId, String message) {
+	public GroupMessageRequestPacket(Integer toGroupId, Integer userId, Integer operate, Integer musicId) {
 		super();
 		this.toGroupId = toGroupId;
-		this.message = message;
+		this.userId = userId;
+		this.operate = operate;
+		this.musicId = musicId;
 	}
 
-	public String getToGroupId() {
+	public Integer getToGroupId() {
 		return toGroupId;
 	}
 
-	public void setToGroupId(String toGroupId) {
+	public void setToGroupId(Integer toGroupId) {
 		this.toGroupId = toGroupId;
 	}
 
-	public String getMessage() {
-		return message;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
-	public String getFileType() {
-		return fileType;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
+	public Integer getOperate() {
+		return operate;
+	}
+
+	public void setOperate(Integer operate) {
+		this.operate = operate;
+	}
+
+	public Integer getMusicId() {
+		return musicId;
+	}
+
+	public void setMusicId(Integer musicId) {
+		this.musicId = musicId;
 	}
 
 	@Override

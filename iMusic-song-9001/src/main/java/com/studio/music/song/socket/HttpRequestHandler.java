@@ -73,9 +73,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
 		switch (type) {
 		   // 注册user-->channel 映射
 		   case 7:
-			  RegisterRequestPacket registerRequestPacket = new RegisterRequestPacket();
-			  TbUser user =  JSON.parseObject(parmas.toJSONString(), TbUser.class);
-			  registerRequestPacket.setUser(user);
+			  RegisterRequestPacket registerRequestPacket = JSON.parseObject(parmas.toJSONString(), RegisterRequestPacket.class);
 			  packet = registerRequestPacket;
 			  break;
 		   // 单聊
@@ -99,9 +97,10 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
 		  // 群聊消息
 		   case 9:
 			  GroupMessageRequestPacket groupMessageRequestPacket = new GroupMessageRequestPacket();
-			  groupMessageRequestPacket.setMessage(parmas.getString("message"));
-			  groupMessageRequestPacket.setToGroupId(parmas.getString("toMessageId"));
-			  groupMessageRequestPacket.setFileType(parmas.getString("fileType"));
+			  groupMessageRequestPacket.setToGroupId(Integer.parseInt(parmas.getString("toGroupId")));
+			  groupMessageRequestPacket.setUserId(Integer.parseInt(parmas.getString("userId")));
+			  groupMessageRequestPacket.setOperate(Integer.parseInt(parmas.getString("operate")));
+			  groupMessageRequestPacket.setMusicId(Integer.parseInt(parmas.getString("musicId")));
 			  packet = groupMessageRequestPacket;
 			  break;
 		  //心跳检测	  
@@ -109,7 +108,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
 			  HeartBeatRequestPacket heartBeatRequestPacket = new HeartBeatRequestPacket();
 			  packet = heartBeatRequestPacket;
 			  break;
-			  default: 
+			  default:
 			  break;
 		}
 		ctx.fireChannelRead(packet);

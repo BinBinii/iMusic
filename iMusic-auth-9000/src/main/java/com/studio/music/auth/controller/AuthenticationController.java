@@ -25,9 +25,9 @@ public class AuthenticationController {
 
     @PostMapping("login")
     public Object login(@RequestBody LoginDto loginDto){
-        TbUser tbUser = tbUserMapper.selectOne(new QueryWrapper<TbUser>().eq("username", loginDto.getUsername()));
+        TbUser tbUser = tbUserMapper.selectOne(new QueryWrapper<TbUser>().eq("email", loginDto.getEmail()));
         if (tbUser != null && bCryptPasswordEncoder.matches(loginDto.getPassword(), tbUser.getPassword())) {
-            String jwt = JwtTokenUtil.createToken(tbUser.getUsername(),"");
+            String jwt = JwtTokenUtil.createToken(tbUser.getEmail(),"");
             return Render.ok(jwt);
         }
         return Render.fail("Login Failed");
