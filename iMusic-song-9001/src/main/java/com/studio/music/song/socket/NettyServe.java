@@ -1,6 +1,7 @@
 package com.studio.music.song.socket;
 
 import com.studio.music.song.mapper.TbGroupMapper;
+import com.studio.music.song.mapper.TbGroupToUserMapper;
 import com.studio.music.song.mapper.TbUserMapper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -41,6 +42,8 @@ public class NettyServe implements InitializingBean {
     private TbGroupMapper tbGroupMapper;
     @Autowired
     private TbUserMapper tbUserMapper;
+    @Autowired
+    private TbGroupToUserMapper tbGroupToUserMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -70,7 +73,7 @@ public class NettyServe implements InitializingBean {
                         ch.pipeline().addLast(RegisterRequestHandler.INSTANCE);
                         ch.pipeline().addLast(new MessageRequestHandler(rabbitTemplate));
                         ch.pipeline().addLast(CreateGroupRequestHandler.INSTANCE);
-                        ch.pipeline().addLast(new GroupMessageRequestHandler(redisTemplate, tbGroupMapper, tbUserMapper));
+                        ch.pipeline().addLast(new GroupMessageRequestHandler(redisTemplate, tbGroupMapper, tbUserMapper, tbGroupToUserMapper));
                         ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
 //                        ch.pipeline().addLast(ExceptionHandler.INSTANCE);
                     }

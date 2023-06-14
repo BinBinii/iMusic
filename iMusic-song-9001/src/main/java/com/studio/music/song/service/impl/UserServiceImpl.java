@@ -9,6 +9,7 @@ import com.studio.music.song.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class UserServiceImpl implements UserService {
     private TbUserMapper tbUserMapper;
     @Autowired
     private RedisTemplate redisTemplate;
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${spring.mail.code.pre}")
     private String CODE_PRE;
 
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
         // 写入用户表
         tbUser.setId(IdGen.randomInteger())
                 .setEmail(registerDto.getEmail())
-                .setPassword("")
+                .setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()))
                 .setImage("")
                 .setNickname("游客" + IdGen.randomInteger())
                 .setStatus(1);

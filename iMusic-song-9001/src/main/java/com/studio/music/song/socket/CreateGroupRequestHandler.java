@@ -48,7 +48,7 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
 		}
 		String groupId = UUID.randomUUID().toString();
 		// 绑定群Id 和 channelgroup的映射
-		SessionUtils.bindChannelGroup(groupId, channelGroup);
+//		SessionUtils.bindChannelGroup(groupId, channelGroup);
 		ByteBuf byteBuf = getByteBuf(ctx, groupId, nameList);
 		channelGroup.writeAndFlush(new TextWebSocketFrame(byteBuf));
 	}

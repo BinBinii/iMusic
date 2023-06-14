@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 /**
  * @Author: BinBin
  * @Date: 2023/06/06/10:40
- * @Description:
+ * @Description: 歌曲
  */
 @Data
 @NoArgsConstructor

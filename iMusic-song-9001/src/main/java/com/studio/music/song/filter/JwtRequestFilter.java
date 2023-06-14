@@ -1,7 +1,7 @@
-package com.studio.music.auth.filter;
+package com.studio.music.song.filter;
 
-import com.studio.music.auth.service.UserDetailsServiceImpl;
-import com.studio.music.auth.utils.JwtTokenUtil;
+import com.studio.music.song.service.impl.UserDetailsServiceImpl;
+import com.studio.music.song.utils.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

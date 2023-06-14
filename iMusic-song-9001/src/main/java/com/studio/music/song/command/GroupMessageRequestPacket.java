@@ -6,7 +6,7 @@ public class GroupMessageRequestPacket extends Packet{
 
 	private Integer userId;
 	
-	private Integer operate;		// 0: 加入歌曲 1: 跳过歌曲 2: 移除歌曲
+	private Integer operate;
 
 	private Integer musicId;
 

@@ -1,7 +1,12 @@
 package com.studio.music.auth.controller;
 
+import com.studio.music.auth.model.pojo.TbUser;
+import com.studio.music.auth.utils.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,11 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    @GetMapping("/user/hello")
-    public String test() {
-        return "Hello ";
-    }
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/admin/hello")
@@ -24,7 +26,7 @@ public class TestController {
         return "Hello Admin";
     }
 
-    @GetMapping("/public/hello")
+    @GetMapping("/user/test")
     public String test3() {
         return "Hello public";
     }

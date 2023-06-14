@@ -1,7 +1,6 @@
-package com.studio.music.auth.utils;
+package com.studio.music.song.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.studio.music.auth.model.pojo.TbUser;
+import com.studio.music.song.model.pojo.TbUser;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @Component

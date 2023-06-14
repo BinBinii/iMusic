@@ -1,13 +1,13 @@
-package com.studio.music.auth.service;
+package com.studio.music.song.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.studio.music.auth.mapper.TbRoleMapper;
-import com.studio.music.auth.mapper.TbUserMapper;
-import com.studio.music.auth.mapper.TbUserRoleMapper;
-import com.studio.music.auth.model.pojo.TbRole;
-import com.studio.music.auth.model.pojo.TbUser;
-import com.studio.music.auth.model.pojo.TbUserRole;
+import com.studio.music.song.mapper.TbRoleMapper;
+import com.studio.music.song.mapper.TbUserMapper;
+import com.studio.music.song.mapper.TbUserRoleMapper;
+import com.studio.music.song.model.pojo.TbRole;
+import com.studio.music.song.model.pojo.TbUser;
+import com.studio.music.song.model.pojo.TbUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;

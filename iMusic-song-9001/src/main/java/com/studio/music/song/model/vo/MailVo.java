@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * @Author: BinBin
  * @Date: 2022/12/13/15:28
- * @Description:
+ * @Description: 邮件
  */
 @Data
 @NoArgsConstructor

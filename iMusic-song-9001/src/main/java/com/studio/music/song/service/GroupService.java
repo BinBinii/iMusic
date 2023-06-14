@@ -2,7 +2,10 @@ package com.studio.music.song.service;
 
 import com.studio.music.song.model.dto.CreateGroupDto;
 import com.studio.music.song.model.pojo.TbGroup;
+import com.studio.music.song.model.vo.GroupInfoVo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Author: BinBin
@@ -25,6 +28,20 @@ public interface GroupService {
      * @return
      */
     TbGroup findGroupById(Integer id);
+
+    /**
+     * 根据ID查询群信息与人员信息
+     * @param id
+     * @return
+     */
+    GroupInfoVo findGroupInfoById(Integer id);
+
+    /**
+     * 根据用户ID查询已加入的群列表
+     * @param userId
+     * @return
+     */
+    List<TbGroup> findGroupListByUserId(Integer userId);
 
     /**
      * 编辑群信息

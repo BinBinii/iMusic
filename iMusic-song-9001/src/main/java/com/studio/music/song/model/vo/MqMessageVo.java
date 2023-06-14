@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * @Author: BinBin
  * @Date: 2023/03/28/14:53
- * @Description:
+ * @Description: 消息队列传输实体
  */
 @Data
 @NoArgsConstructor

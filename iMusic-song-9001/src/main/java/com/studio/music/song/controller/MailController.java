@@ -1,14 +1,12 @@
 package com.studio.music.song.controller;
 
+import com.studio.music.song.model.dto.VerificationCodeDto;
 import com.studio.music.song.model.vo.MailVo;
 import com.studio.music.song.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +30,7 @@ public class MailController {
     private Integer CODE_PRE_EXPIRE;
 
     @PostMapping("/send/register/verification/code")
-    public boolean verificationCode(@RequestParam("mail") String mail) {
+    public boolean verificationCode(@RequestBody VerificationCodeDto verificationCodeDto) {
         MailVo mailVo = new MailVo();
         String code = String.valueOf(new Random().nextInt(899999) + 100000);
         String title = "[iMusic] Please verify your device";
@@ -43,7 +41,7 @@ public class MailController {
                 "If you still have problems, please contact us through this email: 847024724@qq.com\n\n" +
                 "Thanks,\n" +
                 "The 603-Studio Team.";
-        mailVo.setMail(mail)
+        mailVo.setMail(verificationCodeDto.getMail())
                 .setTitle(title)
                 .setContent(content);
         // 验证码存入redis 5min生命周期

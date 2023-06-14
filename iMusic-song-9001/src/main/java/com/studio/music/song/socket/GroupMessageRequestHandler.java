@@ -2,11 +2,14 @@ package com.studio.music.song.socket;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.studio.music.song.command.GroupMessageRequestPacket;
 import com.studio.music.song.contacts.RedisContacts;
 import com.studio.music.song.mapper.TbGroupMapper;
+import com.studio.music.song.mapper.TbGroupToUserMapper;
 import com.studio.music.song.mapper.TbUserMapper;
 import com.studio.music.song.model.pojo.TbGroup;
+import com.studio.music.song.model.pojo.TbGroupToUser;
 import com.studio.music.song.model.pojo.TbUser;
 import com.studio.music.song.model.vo.GroupMusicVo;
 import com.studio.music.song.model.vo.MusicVo;
@@ -38,12 +41,15 @@ public class GroupMessageRequestHandler extends SimpleChannelInboundHandler<Grou
 
 	private TbGroupMapper tbGroupMapper;
 
+	private TbGroupToUserMapper tbGroupToUserMapper;
+
 	private TbUserMapper tbUserMapper;
 	
-	public GroupMessageRequestHandler(RedisTemplate redisTemplate, TbGroupMapper tbGroupMapper, TbUserMapper tbUserMapper) {
+	public GroupMessageRequestHandler(RedisTemplate redisTemplate, TbGroupMapper tbGroupMapper, TbUserMapper tbUserMapper, TbGroupToUserMapper tbGroupToUserMapper) {
 		this.redisTemplate = redisTemplate;
 		this.tbGroupMapper = tbGroupMapper;
 		this.tbUserMapper = tbUserMapper;
+		this.tbGroupToUserMapper = tbGroupToUserMapper;
 	}
 	
 	@Override
@@ -71,7 +77,6 @@ public class GroupMessageRequestHandler extends SimpleChannelInboundHandler<Grou
 				GroupMusicVo groupMusicVo = JSON.parseObject(json, GroupMusicVo.class);
 				if (operate.equals(1)) {
 					// 加入歌曲
-
 					MusicVo musicVo = new MusicVo();
 					musicVo.setNickname(tbUser.getNickname())
 							.setMusicId(musicId);
@@ -83,44 +88,38 @@ public class GroupMessageRequestHandler extends SimpleChannelInboundHandler<Grou
 				}
 				else if (operate.equals(3)) {
 					// 移除歌曲
+					for (MusicVo musicVo:groupMusicVo.getMusicVos()) {
+						if (musicVo.getMusicId().equals(musicId)) {
+							groupMusicVo.getMusicVos().remove(musicVo);
+						}
+					}
+				}
+				else if (operate.equals(4)) {
+					// 更改歌曲时间
+
 				}
 				redisTemplate.opsForValue().set(RedisContacts.GROUP_MUSICS_PRE + ":" + groupId + "", JSON.toJSONString(groupMusicVo));
 				// 发送消息给群组成员
-
+				List<Channel> channels = SessionUtils.getChannelGroup(groupId);
+				for (Channel channel:channels) {
+					ByteBuf byteBuf = getByteBuf(ctx, groupId,  tbUser, operate, groupMusicVo.getMusicVos());
+					channel.writeAndFlush(new TextWebSocketFrame(byteBuf));
+				}
 			}
 		}
-
-//		TbGroup tbGroup =
-//		String groupId = groupMessageRequestPacket.getToGroupId();
-//		String fileType = groupMessageRequestPacket.getFileType();
-//		ChannelGroup channelGroup = SessionUtils.getChannelGroup(groupId);
-//		List<String> nameList = new ArrayList<>();
-//		for (Channel channel : channelGroup) {
-//			TbUser user = SessionUtils.getUser(channel);
-//			nameList.add(user.getNickname());
-//		}
-//		if (channelGroup != null) {
-//			TbUser user = SessionUtils.getUser(ctx.channel());
-//			ByteBuf byteBuf = getByteBuf(ctx, groupId, groupMessageRequestPacket.getMessage(), user, fileType, nameList);
-//			channelGroup.remove(ctx.channel());//发送方不需要自己再收到消息
-//			channelGroup.writeAndFlush(new TextWebSocketFrame(byteBuf));
-//			channelGroup.add(ctx.channel()); //发送完消息再添加回去 ---todo 是否有更好得方式
-//		}
 	}
 	
-	public ByteBuf getByteBuf(ChannelHandlerContext ctx, String groupId, String message, 
-			                  TbUser fromUser, String fileType, List<String> nameList) {
+	public ByteBuf getByteBuf(ChannelHandlerContext ctx, Integer groupId,
+			                  TbUser fromUser, Integer operateType, List<MusicVo> musicVos) {
 		ByteBuf byteBuf = ctx.alloc().buffer();
 		JSONObject data = new JSONObject();
 		data.put("type", 10);
 		data.put("status", 200);
 		JSONObject params = new JSONObject();
-		params.put("message", message);
-		params.put("fileType", fileType);
+		params.put("operateType", operateType);
 		params.put("fromUser", fromUser);
 		params.put("groupId", groupId);
-		Collections.reverse(nameList);
-		params.put("nameList", nameList);
+		params.put("data", musicVos);
 		data.put("params", params);
 		byte []bytes = data.toJSONString().getBytes(Charset.forName("utf-8"));
 		byteBuf.writeBytes(bytes);
