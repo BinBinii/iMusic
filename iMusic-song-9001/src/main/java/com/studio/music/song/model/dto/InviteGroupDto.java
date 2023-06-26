@@ -14,4 +14,6 @@ public class InviteGroupDto implements Serializable {
     private Integer groupId;
 
     private Integer[] userIds;
+
+    private String userNickname;
 }

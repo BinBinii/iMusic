@@ -54,10 +54,13 @@ public class GroupServiceImpl implements GroupService {
         TbGroupToUser tbGroupToUser = new TbGroupToUser();
         tbGroupToUser.setGroup_id(groupId)
                 .setUser_id(createGroupDto.getAdmin())
-                .setJoin_time(new Date());
-        if (tbGroupMapper.insert(tbGroup) != 1 && tbGroupToUserMapper.insert(tbGroupToUser) != 1) {
-            return false;
-        }
+                .setJoin_time(new Date())
+                .setNickname(tbUserMapper.selectById(createGroupDto.getAdmin()).getNickname());
+        tbGroupMapper.insert(tbGroup);
+        tbGroupToUserMapper.insert(tbGroupToUser);
+//        if (tbGroupMapper.insert(tbGroup) != 1 && tbGroupToUserMapper.insert(tbGroupToUser) != 1) {
+//            return false;
+//        }
         return true;
     }
 

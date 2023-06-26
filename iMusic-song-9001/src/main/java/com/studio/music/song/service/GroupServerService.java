@@ -4,6 +4,7 @@ import com.studio.music.song.model.dto.AddGroupDto;
 import com.studio.music.song.model.dto.ExamineApplyDto;
 import com.studio.music.song.model.dto.InviteGroupDto;
 import com.studio.music.song.model.pojo.TbGroupApply;
+import com.studio.music.song.model.vo.GroupApplyVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public interface GroupServerService {
      * @param admin
      * @return
      */
-    List<TbGroupApply> findGroupApplyList(Integer admin);
+    List<GroupApplyVo> findGroupApplyList(Integer admin, Integer status);
 
     /**
      * 审核

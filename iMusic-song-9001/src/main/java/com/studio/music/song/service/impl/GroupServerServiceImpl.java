@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.studio.music.song.mapper.TbGroupApplyMapper;
 import com.studio.music.song.mapper.TbGroupMapper;
 import com.studio.music.song.mapper.TbGroupToUserMapper;
+import com.studio.music.song.mapper.TbUserMapper;
 import com.studio.music.song.model.dto.AddGroupDto;
 import com.studio.music.song.model.dto.ExamineApplyDto;
 import com.studio.music.song.model.dto.InviteGroupDto;
 import com.studio.music.song.model.pojo.TbGroup;
 import com.studio.music.song.model.pojo.TbGroupApply;
 import com.studio.music.song.model.pojo.TbGroupToUser;
+import com.studio.music.song.model.vo.GroupApplyVo;
 import com.studio.music.song.service.GroupServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class GroupServerServiceImpl implements GroupServerService {
     private TbGroupMapper tbGroupMapper;
     @Autowired
     private TbGroupToUserMapper tbGroupToUserMapper;
+    @Autowired
+    private TbUserMapper tbUserMapper;
 
     @Override
     public boolean joinGroup(AddGroupDto addGroupDto) {
@@ -62,23 +66,32 @@ public class GroupServerServiceImpl implements GroupServerService {
             TbGroupToUser tbGroupToUser = new TbGroupToUser();
             tbGroupToUser.setGroup_id(inviteGroupDto.getGroupId())
                     .setUser_id(userId)
-                    .setJoin_time(new Date());
+                    .setJoin_time(new Date())
+                    .setNickname(inviteGroupDto.getUserNickname());
             tbGroupToUserMapper.insert(tbGroupToUser);
         }
         return true;
     }
 
     @Override
-    public List<TbGroupApply> findGroupApplyList(Integer admin) {
-        List<TbGroupApply> list = new ArrayList<>();
+    public List<GroupApplyVo> findGroupApplyList(Integer admin, Integer status) {
+        List<GroupApplyVo> list = new ArrayList<>();
         QueryWrapper<TbGroup> tbGroupQueryWrapper = new QueryWrapper<>();
         tbGroupQueryWrapper.eq("admin", admin);
         List<TbGroup> groups = tbGroupMapper.selectList(tbGroupQueryWrapper);
         for (TbGroup group:groups) {
             QueryWrapper<TbGroupApply> tbGroupApplyQueryWrapper = new QueryWrapper<>();
-            tbGroupApplyQueryWrapper.eq("group_id", group.getId());
+            tbGroupApplyQueryWrapper.eq("group_id", group.getId()).eq("status", status);
             List<TbGroupApply> tbGroupApplies = tbGroupApplyMapper.selectList(tbGroupApplyQueryWrapper);
-            list.addAll(tbGroupApplies);
+            for (TbGroupApply tbGroupApply:tbGroupApplies) {
+                GroupApplyVo groupApplyVo = new GroupApplyVo();
+                groupApplyVo.setId(tbGroupApply.getId())
+                        .setTbUser(tbUserMapper.selectById(tbGroupApply.getUser_id()))
+                        .setTbGroup(tbGroupMapper.selectById(tbGroupApply.getGroup_id()))
+                        .setApply_time(tbGroupApply.getApply_time())
+                        .setStatus(tbGroupApply.getStatus());
+                list.add(groupApplyVo);
+            }
         }
         return list;
     }
@@ -101,7 +114,8 @@ public class GroupServerServiceImpl implements GroupServerService {
             TbGroupToUser tbGroupToUser = new TbGroupToUser();
             tbGroupToUser.setGroup_id(tbGroupApply.getGroup_id())
                     .setUser_id(tbGroupApply.getUser_id())
-                    .setJoin_time(new Date());
+                    .setJoin_time(new Date())
+                    .setNickname(tbUserMapper.selectById(tbGroupApply.getUser_id()).getNickname());
             tbGroupToUserMapper.insert(tbGroupToUser);
         }
         tbGroupApplyMapper.updateById(tbGroupApply);

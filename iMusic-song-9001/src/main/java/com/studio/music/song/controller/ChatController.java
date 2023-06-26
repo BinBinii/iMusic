@@ -3,6 +3,7 @@ package com.studio.music.song.controller;
 import com.studio.music.common.model.vo.Render;
 import com.studio.music.song.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,6 +18,7 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("group/join")
     public Object joinGroup(@RequestParam("userId") Integer userId,
                             @RequestParam("groupId") Integer groupId) {
@@ -27,6 +29,7 @@ public class ChatController {
         return Render.ok(true);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("group/leave")
     public Object leaveGroup(@RequestParam("userId") Integer userId,
                              @RequestParam("groupId") Integer groupId) {

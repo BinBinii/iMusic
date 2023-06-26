@@ -19,7 +19,7 @@ public class MusicController {
     @Autowired
     private MusicService musicService;
 
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("info/{groupId}")
     public Object findGroupInfo(@PathVariable("groupId") Integer groupId) {
         GroupMusicVo result = musicService.findGroupInfo(groupId);

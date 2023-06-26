@@ -75,6 +75,9 @@ public class GroupMessageRequestHandler extends SimpleChannelInboundHandler<Grou
 				redisTemplate.opsForValue().set(RedisContacts.GROUP_MUSICS_PRE + ":" + groupId + "", JSON.toJSONString(groupMusicVo));
 			} else {
 				GroupMusicVo groupMusicVo = JSON.parseObject(json, GroupMusicVo.class);
+				if (operate.equals(0)) {
+					// 加入服务器
+				}
 				if (operate.equals(1)) {
 					// 加入歌曲
 					MusicVo musicVo = new MusicVo();

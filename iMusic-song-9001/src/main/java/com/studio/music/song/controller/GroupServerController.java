@@ -4,9 +4,10 @@ import com.studio.music.common.model.vo.Render;
 import com.studio.music.song.model.dto.AddGroupDto;
 import com.studio.music.song.model.dto.ExamineApplyDto;
 import com.studio.music.song.model.dto.InviteGroupDto;
-import com.studio.music.song.model.pojo.TbGroupApply;
+import com.studio.music.song.model.vo.GroupApplyVo;
 import com.studio.music.song.service.GroupServerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class GroupServerController {
     @Autowired
     private GroupServerService groupServerService;
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("join")
     public Object joinGroup(@RequestBody AddGroupDto addGroupDto) {
         boolean result = groupServerService.joinGroup(addGroupDto);
@@ -32,6 +34,7 @@ public class GroupServerController {
         return Render.ok(true);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("exit")
     public Object exitGroup(@RequestParam("groupId") Integer groupId, @RequestParam("userId") Integer userId) {
         boolean result = groupServerService.exitGroup(groupId, userId);
@@ -41,6 +44,7 @@ public class GroupServerController {
         return Render.ok(true);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("invite")
     public Object invite(@RequestBody InviteGroupDto inviteGroupDto) {
         boolean result = groupServerService.invite(inviteGroupDto);
@@ -50,12 +54,14 @@ public class GroupServerController {
         return Render.ok(true);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("apply/list")
-    public Object findGroupApplyList(@RequestParam("admin") Integer admin) {
-        List<TbGroupApply> result = groupServerService.findGroupApplyList(admin);
+    public Object findGroupApplyList(@RequestParam("admin") Integer admin, @RequestParam("status") Integer status) {
+        List<GroupApplyVo> result = groupServerService.findGroupApplyList(admin, status);
         return Render.ok(result);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("examine")
     public Object examine(@RequestBody ExamineApplyDto examineApplyDto) {
         int result = groupServerService.examine(examineApplyDto);

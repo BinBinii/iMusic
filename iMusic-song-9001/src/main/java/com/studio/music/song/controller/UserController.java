@@ -2,9 +2,13 @@ package com.studio.music.song.controller;
 
 import com.studio.music.common.model.vo.Render;
 import com.studio.music.song.model.dto.RegisterDto;
+import com.studio.music.song.model.pojo.TbUser;
 import com.studio.music.song.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author: BinBin
@@ -30,6 +34,13 @@ public class UserController {
         if (result == -2) {
             return Render.fail("Verification code error");
         }
+        return Render.ok(result);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("search")
+    public Object searchUser(@RequestParam("keyword") String search) {
+        List<TbUser> result = userService.searchUser(search);
         return Render.ok(result);
     }
 

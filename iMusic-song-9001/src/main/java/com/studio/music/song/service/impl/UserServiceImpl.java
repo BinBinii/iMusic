@@ -1,5 +1,6 @@
 package com.studio.music.song.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.studio.music.common.utils.IdGen;
 import com.studio.music.song.mapper.TbUserMapper;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +61,22 @@ public class UserServiceImpl implements UserService {
         // 注册成功后redis删除验证码记录
         redisTemplate.delete(CODE_PRE + ":" + registerDto.getEmail() + "");
         return 1;
+    }
+
+    @Override
+    public List<TbUser> searchUser(String search) {
+        if (search.isEmpty()) {
+            return null;
+        }
+        LambdaQueryWrapper<TbUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (search.matches("\\d+")) {
+            lambdaQueryWrapper.eq(TbUser::getId, Integer.parseInt(search));
+        }
+        lambdaQueryWrapper.eq(TbUser::getEmail, search)
+                .or().eq(TbUser::getNickname, search);
+        List<TbUser> list = tbUserMapper.selectList(lambdaQueryWrapper);
+        list.forEach(tbUser -> tbUser.setPassword(""));
+        return list;
     }
 
     private boolean checkData(String email) {
